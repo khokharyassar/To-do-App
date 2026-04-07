@@ -1,513 +1,542 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#0d0f17" />
-  <title>TaskFlow – My Personal Tasks</title>
-  <meta name="description" content="Personal productivity app – daily tasks, to-dos, and reminders." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#0d0f17" />
+    <title>TaskFlow – My Personal Tasks</title>
+    <meta name="description" content="Personal productivity app – daily tasks, to-dos, and reminders." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-  <!-- ============================================================
-       LOGIN SCREEN  (two fully separate views, only one shown at a time)
+    <!-- ============================================================
+       LOGIN SCREEN
        ============================================================ -->
-  <div id="login-screen" class="login-screen">
-    <div class="auth-bg-orb orb-1"></div>
-    <div class="auth-bg-orb orb-2"></div>
+    <div id="login-screen" class="login-screen">
+        <div class="auth-bg-orb orb-1"></div>
+        <div class="auth-bg-orb orb-2"></div>
 
-    <!-- ────────── LOGIN VIEW ────────── -->
-    <div id="view-login" class="auth-card">
-      <div class="auth-brand">
-        <span class="auth-brand-icon">⚡</span>
-        <span class="auth-brand-name">TaskFlow</span>
-      </div>
+        <!-- ────────── LOADING VIEW (shown while Firebase checks auth state) ────────── -->
+        <div id="view-loading" class="auth-card">
+            <div class="auth-brand">
+                <span class="auth-brand-icon">⚡</span>
+                <span class="auth-brand-name">TaskFlow</span>
+            </div>
+            <div class="auth-header">
+                <div class="auth-avatar">⏳</div>
+                <h1 class="auth-title">Loading…</h1>
+                <p class="auth-subtitle">Connecting securely</p>
+            </div>
+        </div>
 
-      <div class="auth-header">
-        <div class="auth-avatar">👋</div>
-        <h1 class="auth-title">Welcome back!</h1>
-        <p class="auth-subtitle">Enter your PIN to unlock your tasks</p>
-      </div>
+        <!-- ────────── LOGIN VIEW ────────── -->
+        <div id="view-login" class="auth-card" style="display:none">
+            <div class="auth-brand">
+                <span class="auth-brand-icon">⚡</span>
+                <span class="auth-brand-name">TaskFlow</span>
+            </div>
+            <div class="auth-header">
+                <div class="auth-avatar">👋</div>
+                <h1 class="auth-title">Welcome back!</h1>
+                <p class="auth-subtitle">Sign in to access your tasks</p>
+            </div>
+            
+            <div class="auth-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    
+                    <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" />
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <div class="password-wrap">
+                        <input type="password" id="login-password" placeholder="Your password"
+                            autocomplete="current-password" />
+                        <button type="button" class="toggle-pw" data-target="login-password">👁</button>
+                    </div>
+                </div>
+                <p class="auth-error" id="login-error"></p>
+                <button class="btn btn-primary btn-full" id="login-btn">Sign In</button>
+                <button class="link-btn" id="forgot-btn" style="margin-top:.5rem">Forgot password?</button>
+            </div>
+            <div class="auth-footer">
+                <button class="link-btn" id="show-register-btn">New here? Create an account</button>
+            </div>
+        </div>
 
-      <div class="pin-display">
-        <span class="pin-dot" id="pin-dot-0"></span>
-        <span class="pin-dot" id="pin-dot-1"></span>
-        <span class="pin-dot" id="pin-dot-2"></span>
-        <span class="pin-dot" id="pin-dot-3"></span>
-      </div>
-      <p class="pin-error" id="pin-error"></p>
+        <!-- ────────── REGISTER VIEW ────────── -->
+        <div id="view-register" class="auth-card auth-card-register" style="display:none">
+            <div class="auth-brand">
+                <span class="auth-brand-icon">⚡</span>
+                <span class="auth-brand-name">TaskFlow</span>
+            </div>
+            <div class="auth-header">
+                <div class="auth-avatar register-avatar">🔐</div>
+                <h1 class="auth-title">Create account</h1>
+                <p class="auth-subtitle">Start tracking your tasks for free</p>
+            </div>
+            <div class="auth-form">
+                <div class="form-group">
+                    <label for="reg-name">Display Name</label>
+                    <input type="text" id="reg-name" placeholder="Your name" autocomplete="name" />
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email" />
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <div class="password-wrap">
+                        <input type="password" id="reg-password" placeholder="At least 6 characters"
+                            autocomplete="new-password" />
+                        <button type="button" class="toggle-pw" data-target="reg-password">👁</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reg-confirm">Confirm Password</label>
+                    <div class="password-wrap">
+                        <input type="password" id="reg-confirm" placeholder="Repeat password"
+                            autocomplete="new-password" />
+                        <button type="button" class="toggle-pw" data-target="reg-confirm">👁</button>
+                    </div>
+                </div>
+                <p class="auth-error" id="reg-error"></p>
+                <button class="btn btn-primary btn-full" id="register-btn">Create Account</button>
+            </div>
+            <div class="auth-footer">
+                <button class="link-btn" id="back-to-login-btn">← Already have an account? Sign in</button>
+            </div>
+        </div>
 
-      <div class="pin-pad">
-        <button class="pin-key" data-val="1">1</button>
-        <button class="pin-key" data-val="2">2</button>
-        <button class="pin-key" data-val="3">3</button>
-        <button class="pin-key" data-val="4">4</button>
-        <button class="pin-key" data-val="5">5</button>
-        <button class="pin-key" data-val="6">6</button>
-        <button class="pin-key" data-val="7">7</button>
-        <button class="pin-key" data-val="8">8</button>
-        <button class="pin-key" data-val="9">9</button>
-        <button class="pin-key pin-clear" id="pin-clear-btn">⌫</button>
-        <button class="pin-key" data-val="0">0</button>
-        <button class="pin-key pin-ok" id="pin-ok-btn">✓</button>
-      </div>
+    </div><!-- /login-screen -->
 
-      <div class="auth-footer">
-        <button class="link-btn" id="show-setup-btn">First time? Set up a PIN</button>
-      </div>
-    </div>
-
-    <!-- ────────── REGISTER VIEW ────────── -->
-    <div id="view-register" class="auth-card auth-card-register" style="display:none">
-      <div class="auth-brand">
-        <span class="auth-brand-icon">⚡</span>
-        <span class="auth-brand-name">TaskFlow</span>
-      </div>
-
-      <div class="auth-header">
-        <div class="auth-avatar register-avatar">🔐</div>
-        <h1 class="auth-title">Create your PIN</h1>
-        <p class="auth-subtitle">Choose a 4-digit PIN to protect your tasks</p>
-      </div>
-
-      <div class="setup-step-track">
-        <div class="setup-step-bar" id="setup-step-bar" style="width:50%"></div>
-      </div>
-      <p class="pin-hint" id="setup-hint">Step 1 of 2 — Choose your PIN</p>
-
-      <div class="pin-display">
-        <span class="pin-dot" id="setup-dot-0"></span>
-        <span class="pin-dot" id="setup-dot-1"></span>
-        <span class="pin-dot" id="setup-dot-2"></span>
-        <span class="pin-dot" id="setup-dot-3"></span>
-      </div>
-      <p class="pin-error" id="setup-error"></p>
-
-      <div class="pin-pad">
-        <button class="pin-key setup-pin-key" data-val="1">1</button>
-        <button class="pin-key setup-pin-key" data-val="2">2</button>
-        <button class="pin-key setup-pin-key" data-val="3">3</button>
-        <button class="pin-key setup-pin-key" data-val="4">4</button>
-        <button class="pin-key setup-pin-key" data-val="5">5</button>
-        <button class="pin-key setup-pin-key" data-val="6">6</button>
-        <button class="pin-key setup-pin-key" data-val="7">7</button>
-        <button class="pin-key setup-pin-key" data-val="8">8</button>
-        <button class="pin-key setup-pin-key" data-val="9">9</button>
-        <button class="pin-key pin-clear" id="setup-clear-btn">⌫</button>
-        <button class="pin-key setup-pin-key" data-val="0">0</button>
-        <button class="pin-key pin-ok" id="setup-ok-btn">✓</button>
-      </div>
-
-      <div class="auth-footer">
-        <button class="link-btn" id="back-to-login-btn">← Already have a PIN? Login</button>
-      </div>
-    </div>
-
-  </div><!-- /login-screen -->
-
-  <!-- ============================================================
+    <!-- ============================================================
        APP ROOT  (hidden until login succeeds)
        ============================================================ -->
-  <div id="app-root" class="app-root" style="display:none">
+    <div id="app-root" class="app-root" style="display:none">
 
-    <div id="toast-container" aria-live="polite"></div>
+        <div id="toast-container" aria-live="polite"></div>
 
-    <!-- Reminder Popup -->
-    <div id="reminder-popup" class="reminder-popup reminder-hidden" role="dialog" aria-modal="true">
-      <div class="reminder-popup-inner">
-        <div class="reminder-icon">🔔</div>
-        <h3 id="reminder-popup-title">Reminder!</h3>
-        <p id="reminder-popup-text"></p>
-        <div class="reminder-popup-time" id="reminder-popup-time"></div>
-        <button id="reminder-dismiss-btn" class="btn btn-primary">Got it!</button>
-      </div>
-    </div>
-    <div id="reminder-overlay" class="reminder-overlay reminder-hidden"></div>
-
-    <!-- Modal Backdrop -->
-    <div id="modal-overlay" class="modal-overlay modal-hidden"></div>
-
-    <!-- Change PIN Modal -->
-    <div id="pin-change-modal" class="modal modal-hidden" role="dialog" aria-modal="true">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Change PIN</h2>
-          <button class="modal-close" id="pin-modal-close-btn">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="old-pin-input">Current PIN</label>
-            <input type="password" id="old-pin-input" placeholder="Enter current PIN" maxlength="4" inputmode="numeric" pattern="[0-9]*" />
-          </div>
-          <div class="form-group">
-            <label for="new-pin-input">New PIN</label>
-            <input type="password" id="new-pin-input" placeholder="4-digit new PIN" maxlength="4" inputmode="numeric" pattern="[0-9]*" />
-          </div>
-          <div class="form-group">
-            <label for="confirm-pin-input">Confirm New PIN</label>
-            <input type="password" id="confirm-pin-input" placeholder="Repeat new PIN" maxlength="4" inputmode="numeric" pattern="[0-9]*" />
-          </div>
-          <p class="pin-error" id="pin-change-error"></p>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-ghost" id="pin-modal-cancel-btn">Cancel</button>
-          <button class="btn btn-primary" id="pin-modal-save-btn">Update PIN</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Add/Edit Task Modal -->
-    <div id="task-modal" class="modal modal-hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 id="modal-title">Add Task</h2>
-          <button class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label>Task Type</label>
-            <div class="type-selector">
-              <button class="type-btn active" data-type="todo"><span class="type-icon">✅</span>To-Do</button>
-              <button class="type-btn" data-type="daily"><span class="type-icon">🔄</span>Daily</button>
-              <button class="type-btn" data-type="reminder"><span class="type-icon">🔔</span>Reminder</button>
+        <!-- Reminder Popup -->
+        <div id="reminder-popup" class="reminder-popup reminder-hidden" role="dialog" aria-modal="true">
+            <div class="reminder-popup-inner">
+                <div class="reminder-icon">🔔</div>
+                <h3 id="reminder-popup-title">Reminder!</h3>
+                <p id="reminder-popup-text"></p>
+                <div class="reminder-popup-time" id="reminder-popup-time"></div>
+                <button id="reminder-dismiss-btn" class="btn btn-primary">Got it!</button>
             </div>
-          </div>
-          <div class="form-group">
-            <label for="task-title-input">Title <span class="required">*</span></label>
-            <input type="text" id="task-title-input" placeholder="What do you need to do?" maxlength="120" />
-          </div>
-          <div class="form-group">
-            <label for="task-desc-input">Description <span class="optional">(optional)</span></label>
-            <textarea id="task-desc-input" placeholder="Add details..." rows="2" maxlength="300"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Priority</label>
-            <div class="priority-selector">
-              <button class="priority-btn active" data-priority="low">🟢 Low</button>
-              <button class="priority-btn" data-priority="medium">🟡 Medium</button>
-              <button class="priority-btn" data-priority="high">🔴 High</button>
-            </div>
-          </div>
-
-          <div id="daily-options" class="task-type-options task-opts-hidden">
-            <div class="form-group">
-              <label>Repeat Days</label>
-              <div class="day-selector" id="day-selector">
-                <button class="day-btn active" data-day="0">Su</button>
-                <button class="day-btn active" data-day="1">Mo</button>
-                <button class="day-btn active" data-day="2">Tu</button>
-                <button class="day-btn active" data-day="3">We</button>
-                <button class="day-btn active" data-day="4">Th</button>
-                <button class="day-btn active" data-day="5">Fr</button>
-                <button class="day-btn active" data-day="6">Sa</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="daily-time-input">Reminder Time <span class="optional">(optional)</span></label>
-              <input type="time" id="daily-time-input" />
-            </div>
-          </div>
-
-          <div id="reminder-options" class="task-type-options task-opts-hidden">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="reminder-date-input">Date <span class="required">*</span></label>
-                <input type="date" id="reminder-date-input" />
-              </div>
-              <div class="form-group">
-                <label for="reminder-time-input">Time <span class="required">*</span></label>
-                <input type="time" id="reminder-time-input" />
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="reminder-notify-input">Notify me</label>
-              <select id="reminder-notify-input">
-                <option value="0">At exact time</option>
-                <option value="5">5 minutes before</option>
-                <option value="10">10 minutes before</option>
-                <option value="15">15 minutes before</option>
-                <option value="30">30 minutes before</option>
-                <option value="60">1 hour before</option>
-              </select>
-            </div>
-          </div>
-
-          <div id="todo-options" class="task-type-options">
-            <div class="form-group">
-              <label for="todo-due-input">Due Date <span class="optional">(optional)</span></label>
-              <input type="date" id="todo-due-input" />
-            </div>
-          </div>
         </div>
-        <div class="modal-footer">
-          <button class="btn btn-ghost" id="modal-cancel-btn">Cancel</button>
-          <button class="btn btn-primary" id="modal-save-btn">Save Task</button>
-        </div>
-      </div>
-    </div>
+        <div id="reminder-overlay" class="reminder-overlay reminder-hidden"></div>
 
-    <!-- App Shell -->
-    <div class="app-container">
-      <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <div class="app-logo">
-            <span class="logo-icon">⚡</span>
-            <span class="logo-text">TaskFlow</span>
-          </div>
-        </div>
-        <nav class="sidebar-nav">
-          <button class="nav-item active" data-section="overview">
-            <span class="nav-icon">🏠</span>
-            <span class="nav-label">Overview</span>
-            <span class="nav-badge" id="badge-overview"></span>
-          </button>
-          <button class="nav-item" data-section="todo">
-            <span class="nav-icon">✅</span>
-            <span class="nav-label">To-Do</span>
-            <span class="nav-badge" id="badge-todo"></span>
-          </button>
-          <button class="nav-item" data-section="daily">
-            <span class="nav-icon">🔄</span>
-            <span class="nav-label">Daily Tasks</span>
-            <span class="nav-badge" id="badge-daily"></span>
-          </button>
-          <button class="nav-item" data-section="reminders">
-            <span class="nav-icon">🔔</span>
-            <span class="nav-label">Reminders</span>
-            <span class="nav-badge" id="badge-reminders"></span>
-          </button>
-          <button class="nav-item" data-section="completed">
-            <span class="nav-icon">🎉</span>
-            <span class="nav-label">Completed</span>
-            <span class="nav-badge" id="badge-completed"></span>
-          </button>
-        </nav>
-        <div class="sidebar-footer">
-          <div class="progress-ring-wrap">
-            <svg class="progress-ring" width="56" height="56" viewBox="0 0 60 60">
-              <circle class="ring-bg" cx="30" cy="30" r="24" />
-              <circle class="ring-fill" id="progress-ring-fill" cx="30" cy="30" r="24" />
-            </svg>
-            <span class="progress-label" id="progress-label">0%</span>
-          </div>
-          <div class="progress-text">
-            <span id="progress-done">0</span>/<span id="progress-total">0</span> today
-          </div>
-          <button class="btn btn-ghost btn-sm sidebar-logout" id="sidebar-logout-btn" title="Lock">🔒</button>
-        </div>
-      </aside>
+        <!-- Shared Modal Backdrop (account modal) -->
+        <div id="modal-overlay" class="modal-overlay modal-hidden"></div>
 
-      <main class="main-content" id="main-content">
-        <header class="topbar">
-          <div class="topbar-left">
-            <div class="mobile-logo">
-              <span>⚡</span><span class="mobile-logo-text">TaskFlow</span>
+        <!-- Task Modal Backdrop (dedicated) -->
+        <div id="task-modal-overlay" class="modal-overlay modal-hidden"></div>
+
+        <!-- Account / Change Password Modal -->
+        <div id="account-modal" class="modal modal-hidden" role="dialog" aria-modal="true">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Account</h2>
+                    <button class="modal-close" id="account-modal-close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:1rem">
+                        Signed in as <strong id="account-email-display" style="color:var(--accent)"></strong>
+                    </p>
+                    <hr style="border:none;border-top:1px solid var(--border);margin-bottom:1rem" />
+                    <h3 style="font-size:.95rem;margin-bottom:.75rem;color:var(--text-primary)">Change Password</h3>
+                    <div class="form-group">
+                        <label for="new-pw-input">New Password</label>
+                        <div class="password-wrap">
+                            <input type="password" id="new-pw-input" placeholder="At least 6 characters"
+                                maxlength="64" />
+                            <button type="button" class="toggle-pw" data-target="new-pw-input">👁</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-pw-input">Confirm New Password</label>
+                        <div class="password-wrap">
+                            <input type="password" id="confirm-pw-input" placeholder="Repeat password" maxlength="64" />
+                            <button type="button" class="toggle-pw" data-target="confirm-pw-input">👁</button>
+                        </div>
+                    </div>
+                    <p class="auth-error" id="account-error"></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-ghost" id="account-modal-cancel-btn">Cancel</button>
+                    <button class="btn btn-primary" id="account-modal-save-btn">Update Password</button>
+                </div>
             </div>
-            <h1 class="page-title" id="page-title">Overview</h1>
-          </div>
-          <div class="topbar-right">
-            <div class="current-datetime" id="current-datetime"></div>
-            <button class="icon-btn" id="lock-btn" title="Lock" aria-label="Lock app">🔒</button>
-            <button class="btn btn-primary add-btn" id="add-task-btn">
-              <span class="add-plus">+</span><span class="add-label"> New</span>
+        </div>
+
+        <!-- Add/Edit Task Modal -->
+        <div id="task-modal" class="modal modal-hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-title">Add Task</h2>
+                    <button class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Task Type</label>
+                        <div class="type-selector">
+                            <button class="type-btn active" data-type="todo"><span
+                                    class="type-icon">✅</span>To-Do</button>
+                            <button class="type-btn" data-type="daily"><span class="type-icon">🔄</span>Daily</button>
+                            <button class="type-btn" data-type="reminder"><span
+                                    class="type-icon">🔔</span>Reminder</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-title-input">Title <span class="required">*</span></label>
+                        <input type="text" id="task-title-input" placeholder="What do you need to do?"
+                            maxlength="120" />
+                    </div>
+                    <div class="form-group">
+                        <label for="task-desc-input">Description <span class="optional">(optional)</span></label>
+                        <textarea id="task-desc-input" placeholder="Add details..." rows="2" maxlength="300"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <div class="priority-selector">
+                            <button class="priority-btn active" data-priority="low">🟢 Low</button>
+                            <button class="priority-btn" data-priority="medium">🟡 Medium</button>
+                            <button class="priority-btn" data-priority="high">🔴 High</button>
+                        </div>
+                    </div>
+
+                    <div id="daily-options" class="task-type-options task-opts-hidden">
+                        <div class="form-group">
+                            <label>Repeat Days</label>
+                            <div class="day-selector" id="day-selector">
+                                <button class="day-btn active" data-day="0">Su</button>
+                                <button class="day-btn active" data-day="1">Mo</button>
+                                <button class="day-btn active" data-day="2">Tu</button>
+                                <button class="day-btn active" data-day="3">We</button>
+                                <button class="day-btn active" data-day="4">Th</button>
+                                <button class="day-btn active" data-day="5">Fr</button>
+                                <button class="day-btn active" data-day="6">Sa</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="daily-time-input">Reminder Time <span class="optional">(optional)</span></label>
+                            <input type="time" id="daily-time-input" />
+                        </div>
+                    </div>
+
+                    <div id="reminder-options" class="task-type-options task-opts-hidden">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="reminder-date-input">Date <span class="required">*</span></label>
+                                <input type="date" id="reminder-date-input" />
+                            </div>
+                            <div class="form-group">
+                                <label for="reminder-time-input">Time <span class="required">*</span></label>
+                                <input type="time" id="reminder-time-input" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reminder-notify-input">Notify me</label>
+                            <select id="reminder-notify-input">
+                                <option value="0">At exact time</option>
+                                <option value="5">5 minutes before</option>
+                                <option value="10">10 minutes before</option>
+                                <option value="15">15 minutes before</option>
+                                <option value="30">30 minutes before</option>
+                                <option value="60">1 hour before</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="todo-options" class="task-type-options task-opts-hidden">
+                        <div class="form-group">
+                            <label for="todo-due-input">Due Date <span class="optional">(optional)</span></label>
+                            <input type="date" id="todo-due-input" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-ghost" id="modal-cancel-btn">Cancel</button>
+                    <button class="btn btn-primary" id="modal-save-btn">Save Task</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- App Shell -->
+        <div class="app-container">
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <div class="app-logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">TaskFlow</span>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <button class="nav-item active" data-section="overview">
+                        <span class="nav-icon">🏠</span>
+                        <span class="nav-label">Overview</span>
+                        <span class="nav-badge" id="badge-overview"></span>
+                    </button>
+                    <button class="nav-item" data-section="todo">
+                        <span class="nav-icon">✅</span>
+                        <span class="nav-label">To-Do</span>
+                        <span class="nav-badge" id="badge-todo"></span>
+                    </button>
+                    <button class="nav-item" data-section="daily">
+                        <span class="nav-icon">🔄</span>
+                        <span class="nav-label">Daily Tasks</span>
+                        <span class="nav-badge" id="badge-daily"></span>
+                    </button>
+                    <button class="nav-item" data-section="reminders">
+                        <span class="nav-icon">🔔</span>
+                        <span class="nav-label">Reminders</span>
+                        <span class="nav-badge" id="badge-reminders"></span>
+                    </button>
+                    <button class="nav-item" data-section="completed">
+                        <span class="nav-icon">🎉</span>
+                        <span class="nav-label">Completed</span>
+                        <span class="nav-badge" id="badge-completed"></span>
+                    </button>
+                </nav>
+                <div class="sidebar-footer">
+                    <div class="progress-ring-wrap">
+                        <svg class="progress-ring" width="56" height="56" viewBox="0 0 60 60">
+                            <circle class="ring-bg" cx="30" cy="30" r="24" />
+                            <circle class="ring-fill" id="progress-ring-fill" cx="30" cy="30" r="24" />
+                        </svg>
+                        <span class="progress-label" id="progress-label">0%</span>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progress-done">0</span>/<span id="progress-total">0</span> today
+                    </div>
+                    <button class="btn btn-ghost btn-sm sidebar-logout" id="sidebar-logout-btn"
+                        title="Sign Out">🔒</button>
+                </div>
+            </aside>
+
+            <main class="main-content" id="main-content">
+                <header class="topbar">
+                    <div class="topbar-left">
+                        <div class="mobile-logo">
+                            <span>⚡</span><span class="mobile-logo-text">TaskFlow</span>
+                        </div>
+                        <h1 class="page-title" id="page-title">Overview</h1>
+                    </div>
+                    <div class="topbar-right">
+                        <div class="current-datetime" id="current-datetime"></div>
+                        <button class="icon-btn" id="lock-btn" title="Sign Out" aria-label="Sign out">🔒</button>
+                        <button class="btn btn-primary add-btn" id="add-task-btn">
+                            <span class="add-plus">+</span><span class="add-label"> New</span>
+                        </button>
+                    </div>
+                </header>
+
+                <div class="scroll-wrap" id="scroll-wrap">
+
+                    <!-- OVERVIEW -->
+                    <section id="section-overview" class="content-section active">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">✅</div>
+                                <div class="stat-info">
+                                    <div class="stat-number" id="stat-todo-count">0</div>
+                                    <div class="stat-label">To-Do</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🔄</div>
+                                <div class="stat-info">
+                                    <div class="stat-number" id="stat-daily-count">0</div>
+                                    <div class="stat-label">Daily</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🔔</div>
+                                <div class="stat-info">
+                                    <div class="stat-number" id="stat-reminder-count">0</div>
+                                    <div class="stat-label">Reminders</div>
+                                </div>
+                            </div>
+                            <div class="stat-card stat-overdue">
+                                <div class="stat-icon">⚠️</div>
+                                <div class="stat-info">
+                                    <div class="stat-number" id="stat-overdue-count">0</div>
+                                    <div class="stat-label">Overdue</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overview-panel">
+                            <div class="panel-header">
+                                <h2>Today's Daily</h2>
+                                <span class="panel-tag" id="daily-today-tag">0</span>
+                            </div>
+                            <div class="task-list" id="overview-daily-list"></div>
+                        </div>
+                        <div class="overview-panel">
+                            <div class="panel-header">
+                                <h2>Upcoming Reminders</h2>
+                                <span class="panel-tag" id="reminders-upcoming-tag">0</span>
+                            </div>
+                            <div class="task-list" id="overview-reminders-list"></div>
+                        </div>
+                        <div class="overview-panel">
+                            <div class="panel-header">
+                                <h2>Pending To-Dos</h2>
+                                <span class="panel-tag" id="todos-pending-tag">0</span>
+                            </div>
+                            <div class="task-list" id="overview-todo-list"></div>
+                        </div>
+                        <div class="mobile-progress-card">
+                            <div class="mobile-progress-info">
+                                <span class="mobile-progress-label">Today's Progress</span>
+                                <span class="mobile-progress-pct" id="mobile-pct">0%</span>
+                            </div>
+                            <div class="mobile-progress-bar-bg">
+                                <div class="mobile-progress-bar-fill" id="mobile-progress-bar"></div>
+                            </div>
+                            <p class="mobile-progress-sub"><span id="mobile-done">0</span> / <span
+                                    id="mobile-total">0</span> tasks done today</p>
+                        </div>
+                    </section>
+
+                    <!-- TO-DO -->
+                    <section id="section-todo" class="content-section">
+                        <div class="section-controls">
+                            <div class="search-bar">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="todo-search" placeholder="Search to-dos..." />
+                            </div>
+                            <div class="filter-row">
+                                <select id="todo-filter-priority">
+                                    <option value="all">All</option>
+                                    <option value="high">🔴 High</option>
+                                    <option value="medium">🟡 Medium</option>
+                                    <option value="low">🟢 Low</option>
+                                </select>
+                                <select id="todo-sort">
+                                    <option value="created">Newest</option>
+                                    <option value="due">Due Date</option>
+                                    <option value="priority">Priority</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="task-list" id="todo-list"></div>
+                        <div class="empty-state sect-hidden" id="todo-empty">
+                            <div class="empty-icon">✅</div>
+                            <h3>No to-dos yet</h3>
+                            <p>Tap <strong>+ New</strong> to add your first task</p>
+                        </div>
+                    </section>
+
+                    <!-- DAILY -->
+                    <section id="section-daily" class="content-section">
+                        <div class="section-controls">
+                            <div class="day-filter" id="daily-day-filter">
+                                <button class="day-filter-btn active" data-day="-1">All</button>
+                                <button class="day-filter-btn" data-day="0">Sun</button>
+                                <button class="day-filter-btn" data-day="1">Mon</button>
+                                <button class="day-filter-btn" data-day="2">Tue</button>
+                                <button class="day-filter-btn" data-day="3">Wed</button>
+                                <button class="day-filter-btn" data-day="4">Thu</button>
+                                <button class="day-filter-btn" data-day="5">Fri</button>
+                                <button class="day-filter-btn" data-day="6">Sat</button>
+                            </div>
+                        </div>
+                        <div class="task-list" id="daily-list"></div>
+                        <div class="empty-state sect-hidden" id="daily-empty">
+                            <div class="empty-icon">🔄</div>
+                            <h3>No daily tasks yet</h3>
+                            <p>Add habits that repeat on selected days</p>
+                        </div>
+                    </section>
+
+                    <!-- REMINDERS -->
+                    <section id="section-reminders" class="content-section">
+                        <div class="section-controls">
+                            <div class="reminder-filters">
+                                <button class="reminder-filter-btn active" data-filter="upcoming">Upcoming</button>
+                                <button class="reminder-filter-btn" data-filter="past">Past</button>
+                                <button class="reminder-filter-btn" data-filter="all">All</button>
+                            </div>
+                        </div>
+                        <div class="task-list" id="reminders-list"></div>
+                        <div class="empty-state sect-hidden" id="reminders-empty">
+                            <div class="empty-icon">🔔</div>
+                            <h3>No reminders set</h3>
+                            <p>e.g., April 9 at 1 PM – Assignment deadline</p>
+                        </div>
+                    </section>
+
+                    <!-- COMPLETED -->
+                    <section id="section-completed" class="content-section">
+                        <div class="section-controls">
+                            <button class="btn btn-ghost btn-sm" id="clear-completed-btn">🗑️ Clear All</button>
+                            <button class="btn btn-ghost btn-sm" id="change-pw-btn">🔑 Change Password</button>
+                        </div>
+                        <div class="task-list" id="completed-list"></div>
+                        <div class="empty-state sect-hidden" id="completed-empty">
+                            <div class="empty-icon">🎉</div>
+                            <h3>Nothing completed yet</h3>
+                            <p>Finished tasks will appear here</p>
+                        </div>
+                    </section>
+
+                </div><!-- /scroll-wrap -->
+            </main>
+        </div><!-- /app-container -->
+
+        <!-- Mobile Bottom Nav -->
+        <nav class="bottom-nav" id="bottom-nav" aria-label="Main navigation">
+            <button class="bottom-nav-item active" data-section="overview">
+                <span class="bottom-nav-icon">🏠</span>
+                <span class="bottom-nav-label">Home</span>
+                <span class="bottom-nav-badge bnav-hidden" id="bnav-badge-overview"></span>
             </button>
-          </div>
-        </header>
+            <button class="bottom-nav-item" data-section="todo">
+                <span class="bottom-nav-icon">✅</span>
+                <span class="bottom-nav-label">To-Do</span>
+                <span class="bottom-nav-badge bnav-hidden" id="bnav-badge-todo"></span>
+            </button>
+            <button class="bottom-nav-item" data-section="daily">
+                <span class="bottom-nav-icon">🔄</span>
+                <span class="bottom-nav-label">Daily</span>
+                <span class="bottom-nav-badge bnav-hidden" id="bnav-badge-daily"></span>
+            </button>
+            <button class="bottom-nav-item" data-section="reminders">
+                <span class="bottom-nav-icon">🔔</span>
+                <span class="bottom-nav-label">Remind</span>
+                <span class="bottom-nav-badge bnav-hidden" id="bnav-badge-reminders"></span>
+            </button>
+            <button class="bottom-nav-item" data-section="completed">
+                <span class="bottom-nav-icon">🎉</span>
+                <span class="bottom-nav-label">Done</span>
+                <span class="bottom-nav-badge bnav-hidden" id="bnav-badge-completed"></span>
+            </button>
+        </nav>
 
-        <div class="scroll-wrap" id="scroll-wrap">
+        <!-- Mobile FAB -->
+        <button class="fab" id="fab-btn" aria-label="Add new task">+</button>
 
-          <!-- OVERVIEW -->
-          <section id="section-overview" class="content-section active">
-            <div class="stats-grid">
-              <div class="stat-card">
-                <div class="stat-icon">✅</div>
-                <div class="stat-info">
-                  <div class="stat-number" id="stat-todo-count">0</div>
-                  <div class="stat-label">To-Do</div>
-                </div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-icon">🔄</div>
-                <div class="stat-info">
-                  <div class="stat-number" id="stat-daily-count">0</div>
-                  <div class="stat-label">Daily</div>
-                </div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-icon">🔔</div>
-                <div class="stat-info">
-                  <div class="stat-number" id="stat-reminder-count">0</div>
-                  <div class="stat-label">Reminders</div>
-                </div>
-              </div>
-              <div class="stat-card stat-overdue">
-                <div class="stat-icon">⚠️</div>
-                <div class="stat-info">
-                  <div class="stat-number" id="stat-overdue-count">0</div>
-                  <div class="stat-label">Overdue</div>
-                </div>
-              </div>
-            </div>
-            <div class="overview-panel">
-              <div class="panel-header">
-                <h2>Today's Daily</h2>
-                <span class="panel-tag" id="daily-today-tag">0</span>
-              </div>
-              <div class="task-list" id="overview-daily-list"></div>
-            </div>
-            <div class="overview-panel">
-              <div class="panel-header">
-                <h2>Upcoming Reminders</h2>
-                <span class="panel-tag" id="reminders-upcoming-tag">0</span>
-              </div>
-              <div class="task-list" id="overview-reminders-list"></div>
-            </div>
-            <div class="overview-panel">
-              <div class="panel-header">
-                <h2>Pending To-Dos</h2>
-                <span class="panel-tag" id="todos-pending-tag">0</span>
-              </div>
-              <div class="task-list" id="overview-todo-list"></div>
-            </div>
-            <div class="mobile-progress-card">
-              <div class="mobile-progress-info">
-                <span class="mobile-progress-label">Today's Progress</span>
-                <span class="mobile-progress-pct" id="mobile-pct">0%</span>
-              </div>
-              <div class="mobile-progress-bar-bg">
-                <div class="mobile-progress-bar-fill" id="mobile-progress-bar"></div>
-              </div>
-              <p class="mobile-progress-sub"><span id="mobile-done">0</span> / <span id="mobile-total">0</span> tasks done today</p>
-            </div>
-          </section>
+    </div><!-- /app-root -->
 
-          <!-- TO-DO -->
-          <section id="section-todo" class="content-section">
-            <div class="section-controls">
-              <div class="search-bar">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="todo-search" placeholder="Search to-dos..." />
-              </div>
-              <div class="filter-row">
-                <select id="todo-filter-priority">
-                  <option value="all">All</option>
-                  <option value="high">🔴 High</option>
-                  <option value="medium">🟡 Medium</option>
-                  <option value="low">🟢 Low</option>
-                </select>
-                <select id="todo-sort">
-                  <option value="created">Newest</option>
-                  <option value="due">Due Date</option>
-                  <option value="priority">Priority</option>
-                </select>
-              </div>
-            </div>
-            <div class="task-list" id="todo-list"></div>
-            <div class="empty-state sect-hidden" id="todo-empty">
-              <div class="empty-icon">✅</div>
-              <h3>No to-dos yet</h3>
-              <p>Tap <strong>+ New</strong> to add your first task</p>
-            </div>
-          </section>
-
-          <!-- DAILY -->
-          <section id="section-daily" class="content-section">
-            <div class="section-controls">
-              <div class="day-filter" id="daily-day-filter">
-                <button class="day-filter-btn active" data-day="-1">All</button>
-                <button class="day-filter-btn" data-day="0">Sun</button>
-                <button class="day-filter-btn" data-day="1">Mon</button>
-                <button class="day-filter-btn" data-day="2">Tue</button>
-                <button class="day-filter-btn" data-day="3">Wed</button>
-                <button class="day-filter-btn" data-day="4">Thu</button>
-                <button class="day-filter-btn" data-day="5">Fri</button>
-                <button class="day-filter-btn" data-day="6">Sat</button>
-              </div>
-            </div>
-            <div class="task-list" id="daily-list"></div>
-            <div class="empty-state sect-hidden" id="daily-empty">
-              <div class="empty-icon">🔄</div>
-              <h3>No daily tasks yet</h3>
-              <p>Add habits that repeat on selected days</p>
-            </div>
-          </section>
-
-          <!-- REMINDERS -->
-          <section id="section-reminders" class="content-section">
-            <div class="section-controls">
-              <div class="reminder-filters">
-                <button class="reminder-filter-btn active" data-filter="upcoming">Upcoming</button>
-                <button class="reminder-filter-btn" data-filter="past">Past</button>
-                <button class="reminder-filter-btn" data-filter="all">All</button>
-              </div>
-            </div>
-            <div class="task-list" id="reminders-list"></div>
-            <div class="empty-state sect-hidden" id="reminders-empty">
-              <div class="empty-icon">🔔</div>
-              <h3>No reminders set</h3>
-              <p>e.g., April 9 at 1 PM – Assignment deadline</p>
-            </div>
-          </section>
-
-          <!-- COMPLETED -->
-          <section id="section-completed" class="content-section">
-            <div class="section-controls">
-              <button class="btn btn-ghost btn-sm" id="clear-completed-btn">🗑️ Clear All</button>
-              <button class="btn btn-ghost btn-sm" id="change-pin-btn">🔑 Change PIN</button>
-            </div>
-            <div class="task-list" id="completed-list"></div>
-            <div class="empty-state sect-hidden" id="completed-empty">
-              <div class="empty-icon">🎉</div>
-              <h3>Nothing completed yet</h3>
-              <p>Finished tasks will appear here</p>
-            </div>
-          </section>
-
-        </div><!-- /scroll-wrap -->
-      </main>
-    </div><!-- /app-container -->
-
-    <!-- Mobile Bottom Nav -->
-    <nav class="bottom-nav" id="bottom-nav" aria-label="Main navigation">
-      <button class="bottom-nav-item active" data-section="overview">
-        <span class="bottom-nav-icon">🏠</span>
-        <span class="bottom-nav-label">Home</span>
-        <span class="bottom-nav-badge bnav-hidden" id="bnav-badge-overview"></span>
-      </button>
-      <button class="bottom-nav-item" data-section="todo">
-        <span class="bottom-nav-icon">✅</span>
-        <span class="bottom-nav-label">To-Do</span>
-        <span class="bottom-nav-badge bnav-hidden" id="bnav-badge-todo"></span>
-      </button>
-      <button class="bottom-nav-item" data-section="daily">
-        <span class="bottom-nav-icon">🔄</span>
-        <span class="bottom-nav-label">Daily</span>
-        <span class="bottom-nav-badge bnav-hidden" id="bnav-badge-daily"></span>
-      </button>
-      <button class="bottom-nav-item" data-section="reminders">
-        <span class="bottom-nav-icon">🔔</span>
-        <span class="bottom-nav-label">Remind</span>
-        <span class="bottom-nav-badge bnav-hidden" id="bnav-badge-reminders"></span>
-      </button>
-      <button class="bottom-nav-item" data-section="completed">
-        <span class="bottom-nav-icon">🎉</span>
-        <span class="bottom-nav-label">Done</span>
-        <span class="bottom-nav-badge bnav-hidden" id="bnav-badge-completed"></span>
-      </button>
-    </nav>
-
-    <!-- Mobile FAB -->
-    <button class="fab" id="fab-btn" aria-label="Add new task">+</button>
-
-  </div><!-- /app-root -->
-
-  <script src="app.js"></script>
+    <!-- Firebase SDKs (v10 compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="app.js"></script>
 </body>
+
 </html>
